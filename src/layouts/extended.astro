@@ -1,0 +1,21 @@
+---
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import Base from './base.astro'
+
+// Grab props coming into this layout
+const {
+  title = 'ReferenceError',
+  description = 'Referenceerror: my coding diary as I figure things out.',
+  url = 'https://yourdomain.com',
+  image = '/og-image.png',
+} = Astro.props
+---
+
+<Base title={title} description={description} url={url} image={image}>
+  <Header />
+  <main class="flex-1 w-full max-w-5xl mx-auto py-5 px-2">
+    <slot />
+  </main>
+  <Footer />
+</Base>

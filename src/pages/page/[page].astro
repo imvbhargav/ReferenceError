@@ -1,0 +1,99 @@
+---
+// page/[page].astro
+import Extended from '../../layouts/extended.astro'
+import { cn } from '../../utils/cn'
+import { formatDate } from '../../utils/date_formatter'
+import { getCollection } from 'astro:content'
+import { slugify } from '../../utils/slugify'
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog')
+  const sorted = allPosts.sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  )
+
+  const pageSize = 12
+  const totalPages = Math.ceil(sorted.length / pageSize)
+
+  // Start from page 2 → totalPages
+  return Array.from({ length: totalPages - 1 }, (_, i) => {
+    const pageNum = i + 2
+    const start = (pageNum - 1) * pageSize
+    const end = start + pageSize
+
+    return {
+      params: { page: String(pageNum) },
+      props: {
+        posts: sorted.slice(start, end),
+        currentPage: pageNum,
+        totalPages,
+      },
+    }
+  })
+}
+
+const { posts, currentPage, totalPages } = Astro.props
+---
+
+<Extended>
+  <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    {
+      posts.map((post) => (
+        <a
+          href={`/blog/${post.id}`}
+          class="flex flex-col no-underline border-2 border-foreground/20 border-dashed px-0 py-4 md:p-4 rounded hover:bg-radial hover:from-transparent hover:from-40% dark:hover:from-10% hover:to-foreground/10 hover:border-transparent hover:scale-104 transition-all duration-300"
+        >
+          <p class="italic opacity-65 dark:opacity-50 text-sm">
+            {post.data.date && formatDate(post.data.date)}
+          </p>
+          <h1
+            class="text-2xl font-black"
+            style={`view-transition-name: ${slugify(post.id)};`}
+          >
+            {post.data.title}
+          </h1>
+          <p class="opacity-65 dark:opacity-50">{post.data.description}</p>
+        </a>
+      ))
+    }
+  </div>
+
+  <!-- Pagination controls -->
+  <nav class="flex gap-2 justify-center mt-8 font-semibold">
+    {
+      currentPage > 1 && (
+        <a
+          href={currentPage === 2 ? '/' : `/page/${currentPage - 1}`}
+          class="px-3 py-1 border-2 border-foreground/25 rounded"
+        >
+          Prev
+        </a>
+      )
+    }
+
+    {
+      Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+        <a
+          href={num === 1 ? '/' : `/page/${num}`}
+          class={cn(
+            'px-3 py-1 border-2 border-foreground/25 rounded',
+            num === currentPage ? 'bg-foreground/25 text-foreground' : ''
+          )}
+        >
+          {num}
+        </a>
+      ))
+    }
+
+    {
+      currentPage < totalPages && (
+        <a
+          href={`/page/${currentPage + 1}`}
+          class="px-3 py-1 border-2 border-foreground/25 rounded"
+        >
+          Next
+        </a>
+      )
+    }
+  </nav>
+</Extended>

@@ -1,0 +1,62 @@
+---
+import '../global.css'
+
+// Define props for title & description
+const {
+  title = 'ReferenceError',
+  description = 'Referenceerror: my coding diary as I figure things out.',
+  url = 'https://yourdomain.com',
+  image = '/og-image.png',
+} = Astro.props
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/asterisk.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Bhargav V" />
+    <meta
+      name="keywords"
+      content="coding, web development, programming, learning to code, Referenceerror"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={image} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      ;(function () {
+        const is_dark_preferred = window.matchMedia(
+          '(prefers-color-scheme: dark)'
+        ).matches
+        const stored_theme = localStorage.getItem('theme')
+        if (
+          (stored_theme && stored_theme === 'dark') ||
+          (!stored_theme && is_dark_preferred)
+        ) {
+          document.documentElement.classList.add('dark')
+        }
+      })()
+    </script>
+  </head>
+  <body
+    class="min-h-screen flex flex-col transition-colors duration-300 relative"
+  >
+    <slot />
+  </body>
+</html>

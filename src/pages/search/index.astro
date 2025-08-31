@@ -1,0 +1,122 @@
+---
+import Extended from '../../layouts/extended.astro'
+import BackButton from '../../components/BackButton.astro'
+---
+
+<!-- @ts-nocheck -->
+<Extended>
+  <section class="max-w-5xl mx-auto">
+    <div class="px-2 md:px-0">
+      <BackButton />
+      <!-- Search box -->
+      <input
+        id="searchBox"
+        type="text"
+        autocomplete="off"
+        placeholder="Search by title or date..."
+        class="px-2 py-2.5 border-2 border-foreground/25 rounded w-full roundedfocus:border-foreground/25 focus:outline-none focus:bg-foreground/10 transition-colors duration-300"
+      />
+
+      <!-- Results -->
+      <div
+        id="results"
+        class="hidden mt-6 grid-cols-1 divide-y-2 md:divide-y-0 border-0 md:border-l-2 md:border-t-2 border-foreground/20 md:grid-cols-2 lg:grid-cols-3"
+      >
+      </div>
+    </div>
+  </section>
+
+  <!-- Fuse.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0"></script>
+
+  <!-- Search logic -->
+  <script>
+    let fuse
+
+    async function loadIndex() {
+      const res = await fetch('/search-index.json')
+      const data = await res.json()
+
+      // Initialize Fuse
+      fuse = new Fuse(data, {
+        includeScore: true,
+        threshold: 0.4,
+        keys: ['title', 'dateStrings'],
+      })
+    }
+
+    function slugify(title: string): string {
+      return title
+        .toLowerCase()
+        .replace(/[^a-z\s-]/g, '') // remove numbers & special chars
+        .trim()
+        .split(/\s+/) // split on whitespace
+        .join('-')
+    }
+
+    function formatDate(date_string: Date) {
+      return new Intl.DateTimeFormat('en-GB', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(date_string))
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadIndex()
+
+      const box = document.getElementById('searchBox')
+      const results = document.getElementById('results')
+
+      box.addEventListener('input', () => {
+        const query = box.value.trim()
+        if (!query) {
+          results?.classList.remove('grid')
+          results?.classList.add('hidden')
+          results.innerHTML = ''
+          return
+        }
+
+        const matches = fuse.search(query)
+        if (matches.length > 0) {
+          results?.classList.remove('hidden')
+          results?.classList.add('grid')
+        } else {
+          results?.classList.remove('grid')
+          results?.classList.add('hidden')
+        }
+
+        results.innerHTML = matches
+          .map(
+            ({ item }) =>
+              `
+          <a
+          href="/blog/${item.id}"
+          class="flex flex-col no-underline md:border-b-2 md:border-r-2 border-foreground/20 px-0 py-4 md:p-4 hover:bg-radial hover:from-transparent hover:from-40% dark:hover:from-10% hover:to-foreground/10 transition-all duration-300 group"
+        >
+          <div class="flex-1 flex flex-col">
+            <p class="italic opacity-65 dark:opacity-50 text-sm">
+              ${item.date && formatDate(item.date)}
+            </p>
+            <h1
+              class="text-2xl font-black"
+              style="view-transition-name: ${slugify(item.id)};"
+            >
+              ${item.title}
+            </h1>
+            <p class="opacity-65 dark:opacity-50">${item.description}</p>
+          </div>
+          <div class="hidden md:flex gap-4 justify-center opacity-0 group-hover:opacity-50 transition-all duration-300 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move-right  mr-6 group-hover:mr-0 transition-all duration-500"> <path d="M18 8L22 12L18 16"></path><path d="M2 12H22"></path>  </svg>
+            Read
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move-left  ml-6 group-hover:ml-0 transition-all duration-500"> <path d="M6 8L2 12L6 16"></path><path d="M2 12H22"></path>  </svg>
+          </div>
+        </a>
+          `
+          )
+          .join('')
+      })
+    })
+  </script>
+</Extended>

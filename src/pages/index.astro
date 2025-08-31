@@ -1,16 +1,66 @@
 ---
+import { MoveLeft, MoveRight } from '@lucide/astro'
+import Extended from '../layouts/extended.astro'
+import { formatDate } from '../utils/date_formatter'
+import { slugify } from '../utils/slugify'
+import { getCollection } from 'astro:content'
 
+const allPosts = await getCollection('blog')
+const sorted = allPosts.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+)
+
+const pageSize = 12
+const totalPages = Math.ceil(sorted.length / pageSize)
+
+// First page
+const posts = sorted.slice(0, pageSize)
+const currentPage = 1
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Extended>
+  <div
+    class="grid grid-cols-1 divide-y-2 md:divide-y-0 border-0 md:border-l-2 md:border-t-2 border-foreground/20 md:grid-cols-2 lg:grid-cols-3"
+  >
+    {
+      posts.map((post) => (
+        <a
+          href={`/blog/${post.id}`}
+          class="flex flex-col no-underline md:border-b-2 md:border-r-2 border-foreground/20 py-4 px-0 md:p-4 hover:bg-radial hover:from-transparent hover:from-40% dark:hover:from-10% hover:to-foreground/10 transition-all duration-300 group"
+        >
+          <div class="flex-1 flex flex-col">
+            <p class="italic opacity-65 dark:opacity-50 text-sm">
+              {post.data.date && formatDate(post.data.date)}
+            </p>
+            <h1
+              class="text-2xl font-black"
+              style={`view-transition-name: ${slugify(post.id)};`}
+            >
+              {post.data.title}
+            </h1>
+            <p class="opacity-65 dark:opacity-50">{post.data.description}</p>
+          </div>
+          <div class="hidden md:flex gap-4 justify-center opacity-0 group-hover:opacity-50 transition-all duration-300 py-2">
+            <MoveRight class=" mr-6 group-hover:mr-0 transition-all duration-500" />
+            Read
+            <MoveLeft class=" ml-6 group-hover:ml-0 transition-all duration-500" />
+          </div>
+        </a>
+      ))
+    }
+  </div>
+
+  <!-- Pagination -->
+  <nav class="flex gap-2 justify-center mt-8 font-semibold">
+    {
+      currentPage < totalPages && (
+        <a
+          href={`/page/${currentPage + 1}`}
+          class="px-3 py-1 border-2 border-foreground/25 rounded"
+        >
+          Next
+        </a>
+      )
+    }
+  </nav>
+</Extended>

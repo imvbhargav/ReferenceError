@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+/* Import typography plugin */
+@plugin "@tailwindcss/typography";
+
+/* Manually toggle dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom theme variables*/
+@theme {
+  /* Required fonts*/
+  --font-dmsans: 'DM Sans', sans-serif;
+  --font-dmmono: 'DM Mono', monospace;
+
+  /* Colors */
+  --color-background: white;
+  --color-foreground: black;
+}
+
+/* Change the colors in dark mode */
+html.dark {
+  --color-background: black;
+  --color-foreground: white;
+}
+
+/* Add default styling to the body element */
+body {
+  color: var(--color-foreground);
+  font-family: var(--font-dmsans);
+  background-color: var(--color-background);
+}
+
+/* Style the selection */
+::selection {
+  color: var(--color-background);
+  background-color: var(--color-foreground);
+}
+
+/* Create custom component styles */
+@layer components {
+  pre,
+  code {
+    font-weight: 400 !important;
+    font-family: var(--font-dmmono) !important;
+  }
+
+  code::after,
+  code::before {
+    display: none;
+  }
+
+  code {
+    padding: 0px 6px;
+    border-radius: 0.25rem;
+    border: 1px solid #99999940;
+    background-color: #bbbbbb40;
+  }
+
+  pre {
+    border: 2px solid #aaaaaa20;
+    border-radius: 0.25rem !important;
+  }
+
+  html.dark .astro-code,
+  html.dark .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Hide scrollbar for Chrome, Safari and Edge */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for IE, Edge (legacy) */
+body {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Still allow scrolling */
+html,
+body {
+  overflow: auto;
+}

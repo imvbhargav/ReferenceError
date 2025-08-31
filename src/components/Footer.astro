@@ -1,0 +1,46 @@
+---
+import { Rss, Moon, Sun } from '@lucide/astro'
+---
+
+<footer
+  class="w-full max-w-5xl mx-auto py-5 flex justify-between items-center px-4 bg-[radial-gradient(circle,_#00000080_1px,_transparent_1px)] dark:bg-[radial-gradient(circle,_#ffffff40_1px,_transparent_1px)] bg-[length:15px_15px]"
+>
+  <div class="flex items-center">
+    <a
+      class="hover:text-background transition-all duration-300 aspect-square bg-background hover:bg-foreground border-foreground/25 border-2 rounded text-foreground px-2 flex items-center"
+      href="/rss.xml"><Rss class="aspect-square w-4" /></a
+    >
+  </div>
+  <div
+    class="border-2 border-foreground/25 dark:border-foreground/15 bg-background flex p-1 rounded-md relative"
+  >
+    <div
+      class="overflow-hidden py-1 pl-1 dark:pl-0 dark:pr-1 w-1/2 top-0 left-0 dark:left-[50%] transition-all duration-300 h-full absolute bg-transparent rounded z-10"
+    >
+      <div class="w-full h-full rounded bg-foreground"></div>
+    </div>
+    <button
+      id="lightBtn"
+      class="z-20 cursor-pointer flex gap-2 px-4 rounded bg-transparent text-background dark:text-foreground"
+      ><Sun class="aspect-square w-4" /></button
+    >
+    <button
+      id="darkBtn"
+      class="z-20 cursor-pointer flex gap-2 px-4 rounded bg-transparent dark:text-background text-foreground"
+      ><Moon class="aspect-square w-4" /></button
+    >
+  </div>
+</footer>
+<script is:inline>
+  function toggleTheme() {
+    document.documentElement.classList.toggle('dark')
+    if (document.documentElement.classList.contains('dark')) {
+      localStorage.setItem('theme', 'dark')
+    } else {
+      localStorage.setItem('theme', 'light')
+    }
+  }
+
+  document.getElementById('lightBtn')?.addEventListener('click', toggleTheme)
+  document.getElementById('darkBtn')?.addEventListener('click', toggleTheme)
+</script>

@@ -1,0 +1,47 @@
+---
+import BackButton from '../../components/BackButton.astro'
+import { formatDate } from '../../utils/date_formatter'
+import { getCollection, render } from 'astro:content'
+import Extended from '../../layouts/extended.astro'
+import { slugify } from '../../utils/slugify'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog')
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }))
+}
+
+// Get post and content to render
+const { post } = Astro.props
+const { Content } = await render(post)
+
+// Build canonical URL safely
+let url = Astro.url.pathname
+if (Astro.site) {
+  url = new URL(Astro.url.pathname, Astro.site).toString()
+}
+
+const image = `/og-image/${post.data.title}.png`
+---
+
+<Extended
+  title={post.data.title}
+  description={post.data.description}
+  url={url}
+  image={image}
+>
+  <article
+    class="prose px-2 md:px-0 max-w-none lg:prose-lg xl:prose-xl dark:prose-invert pb-10"
+  >
+    <BackButton />
+    <h6 class="text-foreground/50 italic">
+      {formatDate(post.data.date)}
+    </h6>
+    <h1 style=`view-transition-name: ${slugify(post.id)};`>
+      {post.data.title}
+    </h1>
+    <Content />
+  </article>
+</Extended>

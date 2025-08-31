@@ -1,0 +1,31 @@
+---
+import BackButton from '../components/BackButton.astro'
+import { formatDate } from '../utils/date_formatter'
+import Extended from './extended.astro'
+import { slugify } from '../utils/slugify'
+
+const { title, date, description } = Astro.props.content
+
+// Build canonical URL safely
+let url = Astro.url.pathname
+if (Astro.site) {
+  url = new URL(Astro.url.pathname, Astro.site).toString()
+}
+
+const image = `/og-image/${title}.png`
+---
+
+<Extended title={title} description={description} url={url} image={image}>
+  <article
+    class="prose px-2 md:px-0 max-w-none lg:prose-lg xl:prose-xl dark:prose-invert pb-10"
+  >
+    <BackButton />
+    <h6 class="text-foreground/50 italic">
+      {formatDate(date)}
+    </h6>
+    <h1 style=`view-transition-name: ${slugify(title)};`>
+      {title}
+    </h1>
+    <slot />
+  </article>
+</Extended>

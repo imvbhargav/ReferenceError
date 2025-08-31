@@ -1,0 +1,19 @@
+---
+import { Search } from '@lucide/astro'
+---
+
+<header
+  class="w-full max-w-5xl mx-auto py-4.5 px-2 flex gap-2 items-center justify-center bg-[radial-gradient(circle,_#00000080_1px,_transparent_1px)] dark:bg-[radial-gradient(circle,_#ffffff40_1px,_transparent_1px)] bg-[length:15px_15px]"
+>
+  <h1
+    class="font-black text-xl rounded bg-background border-2 border-foreground/15 hover:bg-foreground/15 transition-colors duration-300"
+  >
+    <a href="/" class="px-6 py-1 block">ReferenceError</a>
+  </h1>
+  <a
+    href="/search"
+    class="p-2 border-2 border-foreground/15 rounded h-full cursor-pointer bg-background hover:bg-foreground/15 transition-colors duration-300"
+  >
+    <Search class="w-5 h-5" />
+  </a>
+</header>
