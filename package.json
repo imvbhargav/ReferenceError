@@ -3,14 +3,12 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "generate:og": "node og-image.ts",
     "dev": "astro dev",
-    "build": "astro build && npm run generate:og",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.5.9",
     "@astrojs/rss": "^4.0.12",
     "@lucide/astro": "^0.542.0",
     "@tailwindcss/vite": "^4.1.12",
