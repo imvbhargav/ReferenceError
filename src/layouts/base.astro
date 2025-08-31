@@ -8,6 +8,9 @@ const {
   url = 'https://yourdomain.com',
   image = '/og-image.png',
 } = Astro.props
+
+const siteUrl = Astro.url.origin
+const fullOgImage = image ? siteUrl + image : siteUrl + '/default-og.png'
 ---
 
 <html lang="en">
@@ -28,11 +31,11 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={url} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={fullOgImage} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image" content={fullOgImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
