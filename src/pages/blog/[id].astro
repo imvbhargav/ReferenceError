@@ -23,7 +23,7 @@ if (Astro.site) {
   url = new URL(Astro.url.pathname, Astro.site).toString()
 }
 
-const image = `/og-image/${post.data.title}.png`
+const image = `/og/${post.id}.png`
 ---
 
 <Extended
